@@ -26,24 +26,27 @@ function Home() {
 
   return (
     <div style={containerStyle}>
-      <h2>Libros Disponibles</h2>
+      <h2 style={titleStyle}>Libros Disponibles</h2>
       <div style={booksGridStyle}>
         {initialBooks.map((book) => (
           <BookCard key={book.id} book={book} addToCart={addToCart} />
         ))}
       </div>
 
-      <Cart cartItems={cart} removeFromCart={removeFromCart} />
-
-      {cart.length > 0 && <CommentForm onSubmit={handleNewComment} />}
+      {cart.length > 0 && (
+        <div style={cartSectionStyle}>
+          <Cart cartItems={cart} removeFromCart={removeFromCart} />
+          <CommentForm onSubmit={handleNewComment} />
+        </div>
+      )}
 
       {comments.length > 0 && (
         <div style={commentsContainerStyle}>
           <h3>Comentarios de los usuarios</h3>
           {comments.map((c, idx) => (
             <div key={idx} style={commentStyle}>
-              <p>{c.comment}</p>
-              <p><strong>Calificación:</strong> {c.rating} estrella{c.rating > 1 ? 's' : ''}</p>
+              <p style={commentTextStyle}>{c.comment}</p>
+              <p style={ratingStyle}><strong>Calificación:</strong> {c.rating} ⭐</p>
             </div>
           ))}
         </div>
@@ -52,9 +55,60 @@ function Home() {
   );
 }
 
-const containerStyle = { padding: '2rem', color: 'grey', maxWidth: '1200px', margin: '0 auto' };
-const booksGridStyle = { display: 'flex', flexWrap: 'wrap', gap: '1rem', justifyContent: 'center' };
-const commentsContainerStyle = { marginTop: '2rem', padding: '1rem', border: '1px solid #646cff', borderRadius: '8px', backgroundColor: '#B4E2ED' };
-const commentStyle = { borderBottom: '1px solid #646cff', padding: '0.5rem 0' };
+const containerStyle = {
+  padding: '2rem',
+  maxWidth: '1200px',
+  margin: '0 auto',
+  fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
+  color: '#333',
+  backgroundColor: '#f9f9f9',
+  minHeight: '100vh'
+};
+
+const titleStyle = {
+  textAlign: 'center',
+  color: '#646cff',
+  marginBottom: '2rem',
+  fontSize: '2rem'
+};
+
+const booksGridStyle = {
+  display: 'flex',
+  flexWrap: 'wrap',
+  gap: '1.5rem',
+  justifyContent: 'center'
+};
+
+const cartSectionStyle = {
+  marginTop: '2rem',
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+  gap: '1rem'
+};
+
+const commentsContainerStyle = {
+  marginTop: '2rem',
+  padding: '1.5rem',
+  border: '2px solid #646cff',
+  borderRadius: '12px',
+  backgroundColor: '#e3f6f5'
+};
+
+const commentStyle = {
+  borderBottom: '1px solid #646cff',
+  padding: '0.75rem 0'
+};
+
+const commentTextStyle = {
+  marginBottom: '0.5rem',
+  fontSize: '1rem',
+  lineHeight: '1.4'
+};
+
+const ratingStyle = {
+  fontWeight: 'bold',
+  color: '#333'
+};
 
 export default Home;
