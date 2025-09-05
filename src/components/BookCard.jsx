@@ -25,7 +25,7 @@ const cardStyle = {
   margin: '1rem',
   width: '200px',
   textAlign: 'center',
-  backgroundColor: '#1a1a1a',
+  backgroundColor: '#B4E2ED',
   color: 'white',
 };
 

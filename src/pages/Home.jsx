@@ -52,9 +52,9 @@ function Home() {
   );
 }
 
-const containerStyle = { padding: '2rem', color: 'white', maxWidth: '1200px', margin: '0 auto' };
+const containerStyle = { padding: '2rem', color: 'grey', maxWidth: '1200px', margin: '0 auto' };
 const booksGridStyle = { display: 'flex', flexWrap: 'wrap', gap: '1rem', justifyContent: 'center' };
-const commentsContainerStyle = { marginTop: '2rem', padding: '1rem', border: '1px solid #646cff', borderRadius: '8px', backgroundColor: '#1a1a1a' };
+const commentsContainerStyle = { marginTop: '2rem', padding: '1rem', border: '1px solid #646cff', borderRadius: '8px', backgroundColor: '#B4E2ED' };
 const commentStyle = { borderBottom: '1px solid #646cff', padding: '0.5rem 0' };
 
 export default Home;

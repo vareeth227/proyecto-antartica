@@ -40,7 +40,7 @@ function Cart({ cartItems: propCart, removeFromCart: propRemove }) {
   );
 }
 
-const cartContainerStyle = { padding: '2rem', border: '1px solid #646cff', borderRadius: '8px', backgroundColor: '#1a1a1a', color: 'white', margin: '2rem auto', maxWidth: '800px' };
+const cartContainerStyle = { padding: '2rem', border: '1px solid #646cff', borderRadius: '8px', backgroundColor: '#B4E2ED', color: 'white', margin: '2rem auto', maxWidth: '800px' };
 const itemStyle = { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' };
 const removeButtonStyle = { backgroundColor: '#ff4d4d', border: 'none', borderRadius: '4px', padding: '0.3rem 0.6rem', color: 'white', cursor: 'pointer' };
 

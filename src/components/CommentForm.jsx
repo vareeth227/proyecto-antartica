@@ -49,7 +49,7 @@ const formStyle = {
   padding: '1rem',
   border: '1px solid #646cff',
   borderRadius: '8px',
-  backgroundColor: '#1a1a1a',
+  backgroundColor: '#B4E2ED',
   color: 'white',
 };
 
