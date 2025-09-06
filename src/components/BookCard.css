@@ -1,0 +1,109 @@
+/* ===========================================
+   Contenedor principal de la flip card
+   =========================================== */
+   .flip-card {
+    background-color: transparent;   /* Fondo transparente para que se vea el contenedor interno */
+    width: 350px;                    /* Ancho de la tarjeta */
+    height: 254px;                   /* Altura de la tarjeta */
+    perspective: 1000px;             /* Perspectiva 3D para el efecto de rotación */
+    font-family: sans-serif;         /* Fuente por defecto para todo el contenido */
+  }
+  
+  /* ===========================================
+     Contenedor interno que rota
+     =========================================== */
+  .flip-card-inner {
+    position: relative;              /* Necesario para posicionar frontal y posterior */
+    width: 100%;                     /* Ocupa todo el ancho del contenedor */
+    height: 100%;                    /* Ocupa toda la altura del contenedor */
+    text-align: center;              /* Centra texto horizontalmente */
+    transition: transform 0.8s;      /* Suaviza la animación de giro */
+    transform-style: preserve-3d;   /* Permite que los hijos se vean en 3D */
+  }
+  
+  /* ===========================================
+     Rotación de la tarjeta al pasar el mouse
+     =========================================== */
+  .flip-card:hover .flip-card-inner {
+    transform: rotateY(180deg);      /* Gira 180° para mostrar la parte trasera */
+  }
+  
+  /* ===========================================
+     Estilos compartidos entre front y back
+     =========================================== */
+  .flip-card-front,
+  .flip-card-back {
+    position: absolute;              /* Posiciona ambas caras encima del contenedor */
+    width: 100%;                     /* Ocupa todo el ancho del contenedor */
+    height: 100%;                    /* Ocupa toda la altura */
+    -webkit-backface-visibility: hidden; /* Oculta la cara trasera en Safari */
+    backface-visibility: hidden;     /* Oculta la cara trasera en navegadores modernos */
+    border-radius: 12px;             /* Bordes redondeados */
+    border: 1px solid #ccc;          /* Borde ligero */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Sombra ligera para dar profundidad */
+    overflow: hidden;                /* Oculta contenido que se salga de la tarjeta */
+    padding: 5px;                    /* Espaciado interno */
+    display: flex;                   /* Flex para organizar contenido */
+    flex-direction: column;          /* Apila contenido verticalmente */
+    justify-content: center;         /* Centra contenido verticalmente */
+    background: #1e1e2f;             /* Color base oscuro */
+    color: white;                    /* Color del texto */
+  }
+  
+  /* ===========================================
+     Cara frontal
+     =========================================== */
+  .flip-card-front {
+    background: linear-gradient(135deg, #1e1e2f, #2e2e48); /* Degradado diagonal de colores oscuros */
+  }
+  
+  /* ===========================================
+     Cara trasera
+     =========================================== */
+  .flip-card-back {
+    background: linear-gradient(135deg, #2e2e48, #3e3e60); /* Degradado más claro que el frontal */
+    transform: rotateY(180deg);                             /* Se rota 180° para aparecer al girar la tarjeta */
+  }
+  
+  /* ===========================================
+     Imagen del libro dentro de la tarjeta
+     =========================================== */
+  .book-image {
+    width: 100%;             /* Ocupa todo el ancho de la tarjeta */
+    height: 65%;             /* Ocupa el 65% de la altura */
+    border-radius: 8px;      /* Bordes redondeados */
+    object-fit: cover;       /* Ajusta la imagen sin deformarla */
+    margin-bottom: 10px;     /* Espacio debajo de la imagen */
+  }
+  
+  /* ===========================================
+     Título del libro
+     =========================================== */
+  .title {
+    font-size: 0.9em;        /* Tamaño de fuente ligeramente pequeño */
+    font-weight: 500;        /* Grosor medio del texto */
+    margin: 8px 0;           /* Espaciado arriba y abajo */
+    color: white;            /* Color del texto */
+  }
+  
+  /* ===========================================
+     Botón "Agregar"
+     =========================================== */
+  .add-button {
+    padding: 8px 12px;             /* Espaciado interno */
+    border: none;                   /* Sin borde */
+    border-radius: 6px;             /* Bordes redondeados */
+    background-color: white;        /* Fondo blanco */
+    color: #2e2e48;                 /* Texto oscuro */
+    font-weight: bold;              /* Texto en negrita */
+    cursor: pointer;                /* Cambia el cursor al pasar sobre el botón */
+    margin-top: auto;               /* Empuja el botón hacia el fondo del contenedor */
+    transition: all 0.3s ease;     /* Animación suave al hacer hover */
+  }
+  
+  /* Hover del botón */
+  .add-button:hover {
+    background-color: #ff7f50;     /* Cambia a color coral al pasar el mouse */
+    color: white;                   /* Texto blanco al hacer hover */
+  }
+  

@@ -1,0 +1,70 @@
+/* ===========================================
+   Contenedor principal del input y el ícono
+   =========================================== */
+   .group {
+    display: flex;                  /* Contenedor flexible para alinear hijos en fila. */
+    line-height: 28px;              /* Altura de línea para el contenido dentro del grupo. */
+    align-items: center;            /* Centra verticalmente los elementos hijos dentro del flex. */
+    position: relative;             /* Permite posicionar elementos hijos absolutamente respecto a este contenedor. */
+    max-width: 190px;               /* Limita el ancho máximo del grupo a 190px. */
+}
+
+/* ===========================================
+   Estilo del campo de entrada
+   =========================================== */
+.input {
+    font-family: "Montserrat", sans-serif;          /* Fuente tipográfica del texto dentro del input. */
+    width: 100%;                                    /* Ocupa todo el ancho del contenedor padre. */
+    height: 45px;                                   /* Altura fija del input. */
+    padding-left: 2.5rem;                           /* Espacio interno a la izquierda, para dejar espacio para el ícono. */
+    box-shadow: 0 0 0 1.5px #2b2c37, 0 0 25px -17px #000; /* Sombras externas para un efecto 3D sutil. */
+    border: 0;                                      /* Elimina borde predeterminado del navegador. */
+    border-radius: 12px;                            /* Bordes redondeados del input. */
+    background-color: #16171d;                      /* Color de fondo oscuro del input. */
+    outline: none;                                  /* Quita el contorno azul por defecto al hacer foco. */
+    color: #bdbecb;                                 /* Color del texto dentro del input. */
+    transition: all 0.25s cubic-bezier(0.19, 1, 0.22, 1); /* Animación suave para cambios de estilo (hover, focus, active). */
+    cursor: text;                                   /* Cambia el cursor a tipo texto al pasar sobre el input. */
+    z-index: 0;                                     /* Define el orden de apilamiento respecto a otros elementos. */
+}
+
+/* ===========================================
+   Estilo del placeholder
+   =========================================== */
+.input::placeholder {
+    color: #bdbecb;   /* Color del texto placeholder, que aparece antes de escribir. */
+}
+
+/* ===========================================
+   Estilo al pasar el mouse sobre el input
+   =========================================== */
+.input:hover {
+    box-shadow: 0 0 0 2.5px #2f303d, 0px 0px 25px -15px #000; /* Resalta con una sombra más fuerte al hover. */
+}
+
+/* ===========================================
+   Estilo al hacer click en el input
+   =========================================== */
+.input:active {
+    transform: scale(0.95);   /* Reduce ligeramente el tamaño para efecto de "clic". */
+}
+
+/* ===========================================
+   Estilo al enfocar el input (focus)
+   =========================================== */
+.input:focus {
+    box-shadow: 0 0 0 2.5px #2f303d;  /* Resalta el input al estar activo con un borde luminoso. */
+}
+
+/* ===========================================
+   Ícono de búsqueda dentro del input
+   =========================================== */
+.search-icon {
+    position: absolute;       /* Posición absoluta dentro del contenedor .group. */
+    left: 1rem;               /* Separación desde el borde izquierdo del contenedor. */
+    fill: #bdbecb;            /* Color del ícono (para SVGs). */
+    width: 1rem;              /* Ancho del ícono. */
+    height: 1rem;             /* Alto del ícono. */
+    pointer-events: none;     /* Ignora los eventos del mouse para que el input reciba el clic. */
+    z-index: 1;               /* Se asegura que el ícono quede por encima del input. */
+}

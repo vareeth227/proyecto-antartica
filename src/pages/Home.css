@@ -1,0 +1,71 @@
+/* ===========================================
+   Contenedor del carousel con texto
+   =========================================== */
+   .carousel-container {
+    position: relative;     /* Permite posicionar elementos hijos de manera absoluta */
+    width: 100%;            /* Ocupa todo el ancho disponible */
+    margin-bottom: 2rem;    /* Separación inferior del resto de la página */
+}
+
+/* ===========================================
+   Título del carousel
+   =========================================== */
+.carousel-title {
+    position: absolute;            /* Posiciona el título dentro del contenedor */
+    top: -3.9rem;                  /* Lo coloca por encima del carousel */
+    left: 50%;                     /* Centra horizontalmente */
+    transform: translateX(-50%);   /* Ajusta para centrar exactamente */
+    font-size: 1.8rem;             /* Tamaño del texto */
+    font-weight: bold;             /* Negrita */
+    color: #646cff;                /* Color azul para destacar */
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.2); /* Sombra sutil para resaltar sobre el fondo */
+    z-index: 10;                   /* Se asegura que quede por encima de otros elementos */
+}
+
+/* ===========================================
+   Carousel horizontal
+   =========================================== */
+.horizontal-carousel {
+    width: 100%;                  /* Ocupa todo el ancho del contenedor */
+    overflow: hidden;             /* Oculta los elementos que se salen del contenedor */
+    padding: 1rem 0;              /* Espaciado vertical interno */
+    background-color: #f0f0f0;    /* Fondo claro para diferenciar del resto */
+    border-radius: 12px;           /* Bordes redondeados */
+}
+
+/* ===========================================
+   Track de elementos (fila de items)
+   =========================================== */
+.carousel-track {
+    display: flex;                /* Alinea los elementos horizontalmente */
+    gap: 1rem;                     /* Espacio entre cada item */
+    animation: scrollLeft 30s linear infinite; /* Animación de desplazamiento continuo */
+}
+
+/* ===========================================
+   Item individual del carousel
+   =========================================== */
+.carousel-item {
+    flex: 0 0 auto;               /* Evita que el item se reduzca o crezca */
+    width: 150px;                  /* Ancho fijo de cada item */
+    height: 220px;                 /* Altura fija de cada item */
+    border-radius: 8px;            /* Bordes redondeados */
+    overflow: hidden;              /* Oculta contenido que sobresalga */
+    border: 2px solid #ccc;        /* Borde gris claro */
+}
+
+/* Imagen dentro del item */
+.carousel-item img {
+    width: 100%;                   /* Ocupa todo el ancho del item */
+    height: 100%;                  /* Ocupa toda la altura del item */
+    object-fit: cover;             /* Ajusta la imagen sin deformarla */
+    display: block;                /* Evita espacios en línea debajo de la imagen */
+}
+
+/* ===========================================
+   Animación para desplazamiento continuo
+   =========================================== */
+@keyframes scrollLeft {
+    0% { transform: translateX(0); }       /* Comienza desde la posición inicial */
+    100% { transform: translateX(-50%); } /* Desplaza hacia la izquierda hasta la mitad del track */
+}
