@@ -22,7 +22,7 @@ function Header() {
     const t = localStorage.getItem('token');
     if (t) {
       try {
-        const res = await fetch(`${API_BASE}/api/cart`, { headers: { Authorization: `Bearer ${t}` } });
+        const res = await fetch(`${API_BASE}/cart`, { headers: { Authorization: `Bearer ${t}` } });
         if (!res.ok) throw new Error('No auth');
         const data = await res.json();
         const sum = Array.isArray(data) ? data.reduce((s, it) => s + (it.quantity || 1), 0) : 0;
@@ -52,7 +52,7 @@ function Header() {
     const handler = () => {
       const token = localStorage.getItem('token');
       if (token) {
-        fetch(`${API_BASE}/api/cart`, { headers: { Authorization: `Bearer ${token}` } })
+        fetch(`${API_BASE}/cart`, { headers: { Authorization: `Bearer ${token}` } })
           .then(async (r) => {
             if (!r.ok) throw new Error('No auth');
             const data = await r.json();

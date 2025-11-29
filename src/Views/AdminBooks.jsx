@@ -14,7 +14,7 @@ export default function AdminBooks() {
 
   const load = async (p = page, l = limit) => {
     try {
-      const res = await fetch(`${API_BASE}/api/books?page=${p}&limit=${l}`);
+      const res = await fetch(`${API_BASE}/books?page=${p}&limit=${l}`);
       if (!res.ok) throw new Error('Error cargando libros');
       const data = await res.json();
       setBooks(data.items || data);
@@ -36,7 +36,7 @@ export default function AdminBooks() {
     e.preventDefault();
     if (!token) return window.location.href = '/login';
     try {
-      const res = await fetch(`${API_BASE}/api/books`, { method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` }, body: JSON.stringify({ title: form.title, author: form.author, price: Number(form.price) || 0, image: form.image || '/assets/placeholder.png', description: form.description, stock: Number(form.stock) || 0 }) });
+      const res = await fetch(`${API_BASE}/books`, { method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` }, body: JSON.stringify({ title: form.title, author: form.author, price: Number(form.price) || 0, image: form.image || '/assets/placeholder.png', description: form.description, stock: Number(form.stock) || 0 }) });
       if (!res.ok) {
         const err = await res.json().catch(() => ({}));
         throw new Error(err.error || 'Error creando libro');
@@ -50,7 +50,7 @@ export default function AdminBooks() {
     if (!token) return window.location.href = '/login';
     if (!window.confirm('¿Eliminar este libro? Esta acción no se puede deshacer.')) return;
     try {
-      const res = await fetch(`${API_BASE}/api/books/${id}`, { method: 'DELETE', headers: { Authorization: `Bearer ${token}` } });
+      const res = await fetch(`${API_BASE}/books/${id}`, { method: 'DELETE', headers: { Authorization: `Bearer ${token}` } });
       if (!res.ok) {
         const err = await res.json().catch(() => ({}));
         throw new Error(err.error || 'Error eliminando libro');
@@ -70,7 +70,7 @@ export default function AdminBooks() {
   const saveEdit = async (id) => {
     if (!token) return window.location.href = '/login';
     try {
-      const res = await fetch(`${API_BASE}/api/books/${id}`, { method: 'PUT', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` }, body: JSON.stringify({ stock: Number(editingStock) }) });
+      const res = await fetch(`${API_BASE}/books/${id}`, { method: 'PUT', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` }, body: JSON.stringify({ stock: Number(editingStock) }) });
       if (!res.ok) {
         const err = await res.json().catch(() => ({}));
         throw new Error(err.error || 'Error actualizando libro');

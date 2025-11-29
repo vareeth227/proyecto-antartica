@@ -35,7 +35,7 @@ function Home() {
   // Cargar libros desde la API al montar
   useEffect(() => {
     const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:4000';
-    fetch(`${API_BASE}/api/books`)
+    fetch(`${API_BASE}/books`)
       .then((r) => r.json())
       .then((data) => {
         // aceptar formato paginado { items, total } o array legacy
@@ -53,7 +53,7 @@ function Home() {
       return;
     }
     const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:4000';
-    fetch(`${API_BASE}/api/cart`, {
+    fetch(`${API_BASE}/cart`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
       body: JSON.stringify({ book_id: book.id, quantity: 1 })

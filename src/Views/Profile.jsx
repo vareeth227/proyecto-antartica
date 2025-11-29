@@ -22,7 +22,7 @@ function Profile() {
       }
       try {
         const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:4000';
-        const res = await fetch(`${API_BASE}/api/users/me`, { headers: { Authorization: `Bearer ${token}` } });
+        const res = await fetch(`${API_BASE}/users/me`, { headers: { Authorization: `Bearer ${token}` } });
         if (!res.ok) {
           const fallbackUsers = JSON.parse(localStorage.getItem('users') || '[]');
           setFull(fallbackUsers.find((u) => u.email === current.email) || current);

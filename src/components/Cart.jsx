@@ -12,7 +12,7 @@ function Cart({ removeFromCart: _propRemove }) {
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (!token) return; // no autenticado
-    fetch(`${API_BASE}/api/cart`, { headers: { Authorization: `Bearer ${token}` } })
+    fetch(`${API_BASE}/cart`, { headers: { Authorization: `Bearer ${token}` } })
       .then(async (r) => {
         if (!r.ok) throw new Error('No se pudo cargar el carrito');
         const data = await r.json();
@@ -30,14 +30,14 @@ function Cart({ removeFromCart: _propRemove }) {
       window.location.href = '/login';
       return;
     }
-    fetch(`${API_BASE}/api/cart/${item.id}`, { method: 'DELETE', headers: { Authorization: `Bearer ${token}` } })
+    fetch(`${API_BASE}/cart/${item.id}`, { method: 'DELETE', headers: { Authorization: `Bearer ${token}` } })
       .then(async (r) => {
         if (!r.ok) {
           const err = await r.json().catch(() => ({}));
           throw new Error(err.error || 'Error eliminando del carrito');
         }
   // refetch cart from server to ensure consistency and stock updates
-  const res = await fetch(`${API_BASE}/api/cart`, { headers: { Authorization: `Bearer ${token}` } });
+  const res = await fetch(`${API_BASE}/cart`, { headers: { Authorization: `Bearer ${token}` } });
   const fresh = await res.json().catch(() => []);
   setCartItems(fresh);
   // notify other parts of the app (header) in same tab
@@ -55,9 +55,9 @@ function Cart({ removeFromCart: _propRemove }) {
       return;
     }
     try {
-      const res = await fetch(`${API_BASE}/api/cart/checkout`, { method: 'POST', headers: { Authorization: `Bearer ${token}` } });
+      const res = await fetch(`${API_BASE}/cart/checkout`, { method: 'POST', headers: { Authorization: `Bearer ${token}` } });
       // refetch cart and notify
-      const fres = await fetch(`${API_BASE}/api/cart`, { headers: { Authorization: `Bearer ${token}` } });
+      const fres = await fetch(`${API_BASE}/cart`, { headers: { Authorization: `Bearer ${token}` } });
       const fresh = await fres.json().catch(() => []);
       setCartItems(fresh);
         try { window.dispatchEvent(new Event('cartChanged')); } catch { /* ignore */ }

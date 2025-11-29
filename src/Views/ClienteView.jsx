@@ -10,7 +10,7 @@ export default function ClienteView() {
 
   const load = async (p = page, l = limit) => {
     try {
-      const res = await fetch(`${API_BASE}/api/users?role=client&page=${p}&limit=${l}`, { headers: { Authorization: `Bearer ${token}` } });
+      const res = await fetch(`${API_BASE}/users?role=client&page=${p}&limit=${l}`, { headers: { Authorization: `Bearer ${token}` } });
       if (!res.ok) throw new Error('Error cargando clientes');
       const data = await res.json();
   const list = Array.isArray(data) ? data : (data.items || []);
