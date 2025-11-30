@@ -3,15 +3,8 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import './Auth.css';
 
-/**
- * Componente Login
- * Permite al usuario iniciar sesión ingresando correo y contraseña.
- */
 function Login() {
-  const [formData, setFormData] = useState({
-    email: '',
-    password: '',
-  });
+  const [formData, setFormData] = useState({ email: '', password: '' });
   const [error, setError] = useState('');
   const [_redirect, _setRedirect] = useState('');
 
@@ -22,33 +15,16 @@ function Login() {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    // Validar formato de correo
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(formData.email)) {
       setError('Correo inválido');
       return;
     }
-
-    // Validar que la contraseña no esté vacía
     if (!formData.password) {
       setError('Contraseña requerida');
       return;
     }
 
-<<<<<<< HEAD
-    // Determinar base de la API (soporta VITE_API_URL o fallback a localhost:4000)
-    const API_BASE = import.meta.env.VITE_API_URL || '';
-    // Autenticar contra la API
-    fetch(`${API_BASE}/auth/login`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email: formData.email, password: formData.password })
-    })
-    .then(async (r) => {
-      if (!r.ok) {
-        const err = await r.json().catch(() => ({}));
-        throw new Error(err.error || 'Login failed');
-=======
     const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:4000';
     const endpoints = [`${API_BASE}/auth/login`, `${API_BASE}/api/login`];
 
@@ -81,7 +57,6 @@ function Login() {
         } catch (e) {
           lastErr = e.message;
         }
->>>>>>> 5f444a4 (testeo back y front 1)
       }
       setError(lastErr);
     })();

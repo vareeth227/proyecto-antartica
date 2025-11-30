@@ -12,13 +12,7 @@ function Header() {
   const [_darkMode, _setDarkMode] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
   const navigate = useNavigate();
-<<<<<<< HEAD
-
-  // API base URL (consistente)
-  const API_BASE = import.meta.env.VITE_API_URL || '';
-=======
   const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:4000';
->>>>>>> 5f444a4 (testeo back y front 1)
 
   const updateCartCount = async () => {
     const t = localStorage.getItem('token');
