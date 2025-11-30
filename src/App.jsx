@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import './App.css';
 import Header from './components/Header';
+import ExternalInfo from './components/ExternalInfo';
 import Home from './Views/Home';
 import Login from './Views/Login';
 import Register from './Views/Register';
@@ -39,7 +40,7 @@ function App() {
         onNavigate={navigate}
         onLogout={handleLogout}
       />
-
+      <ExternalInfo />
       <Routes>
         <Route path="/" element={currentPage === 'home' && <Home />} />
         <Route path="/login" element={currentPage === 'login' && <Login />} />

@@ -1,11 +1,11 @@
-// src/pages/Login.jsx
+// src/Views/Login.jsx
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import './Auth.css';
 
 /**
  * Componente Login
  * Permite al usuario iniciar sesión ingresando correo y contraseña.
- * Valida formato de correo y que la contraseña no esté vacía.
  */
 function Login() {
   const [formData, setFormData] = useState({
@@ -13,21 +13,12 @@ function Login() {
     password: '',
   });
   const [error, setError] = useState('');
-  // Agregar estado para redirección (prefijado con _ para evitar warning si no se usa aún)
   const [_redirect, _setRedirect] = useState('');
 
-  /**
-   * handleChange
-   * Actualiza el estado del formulario cuando el usuario escribe en un input.
-   */
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  /**
-   * handleSubmit
-   * Valida y procesa el formulario al enviar.
-   */
   const handleSubmit = (e) => {
     e.preventDefault();
 
@@ -44,6 +35,7 @@ function Login() {
       return;
     }
 
+<<<<<<< HEAD
     // Determinar base de la API (soporta VITE_API_URL o fallback a localhost:4000)
     const API_BASE = import.meta.env.VITE_API_URL || '';
     // Autenticar contra la API
@@ -56,33 +48,50 @@ function Login() {
       if (!r.ok) {
         const err = await r.json().catch(() => ({}));
         throw new Error(err.error || 'Login failed');
+=======
+    const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:4000';
+    const endpoints = [`${API_BASE}/auth/login`, `${API_BASE}/api/login`];
+
+    (async () => {
+      let lastErr = 'Login failed';
+      for (const url of endpoints) {
+        try {
+          const r = await fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email: formData.email, password: formData.password })
+          });
+          if (!r.ok) {
+            const err = await r.json().catch(async () => {
+              const txt = await r.text().catch(() => '');
+              return { error: txt };
+            });
+            throw new Error(err.error || `Error ${r.status} en ${url}`);
+          }
+          const data = await r.json();
+          localStorage.setItem('token', data.token);
+          localStorage.setItem('currentUser', JSON.stringify(data.user));
+          setError('');
+          if (data.user.role === 'admin') {
+            window.location.href = '/adminview';
+          } else {
+            window.location.href = '/';
+          }
+          return;
+        } catch (e) {
+          lastErr = e.message;
+        }
+>>>>>>> 5f444a4 (testeo back y front 1)
       }
-      return r.json();
-    })
-    .then((data) => {
-      // Guardar token y currentUser
-      localStorage.setItem('token', data.token);
-      localStorage.setItem('currentUser', JSON.stringify(data.user));
-      setError('');
-      if (data.user.role === 'admin') {
-        window.location.href = '/adminview';
-      } else {
-        window.location.href = '/';
-      }
-    })
-    .catch((err) => {
-      setError(err.message);
-    });
+      setError(lastErr);
+    })();
   };
 
   return (
-    <div style={containerStyle}>
-      <div style={cardStyle}>
-        {/* Título de la tarjeta */}
-        <h2 style={titleStyle}>Iniciar Sesión</h2>
-
-        {/* Formulario */}
-        <form onSubmit={handleSubmit} style={formStyle}>
+    <div className="auth-container">
+      <div className="auth-card">
+        <h2 className="auth-title">Iniciar Sesión</h2>
+        <form onSubmit={handleSubmit} className="auth-form">
           <input
             type="email"
             name="email"
@@ -90,7 +99,7 @@ function Login() {
             value={formData.email}
             onChange={handleChange}
             required
-            style={inputStyle}
+            className="auth-input"
           />
           <input
             type="password"
@@ -99,104 +108,18 @@ function Login() {
             value={formData.password}
             onChange={handleChange}
             required
-            style={inputStyle}
+            className="auth-input"
           />
-
-          {/* Mensaje de error */}
-          {error && <span style={errorStyle}>{error}</span>}
-
-          {/* Botón de envío */}
-          <button type="submit" style={buttonStyle}>Entrar</button>
-
-          {/* Enlace a registro debajo del botón */}
-          <p style={registerTextStyle}>
+          {error && <span className="auth-error">{error}</span>}
+          <button type="submit" className="auth-button">Entrar</button>
+          <p className="auth-register-text">
             ¿No tienes cuenta?{' '}
-            <Link to="/register" style={registerLinkStyle}>Regístrate aquí</Link>
+            <Link to="/register" className="auth-register-link">Regístrate aquí</Link>
           </p>
         </form>
       </div>
     </div>
   );
 }
-
-/* =========================
-   Estilos inline adaptados de Ayuda.jsx
-   ========================= */
-
-const containerStyle = {
-  display: 'flex',
-  justifyContent: 'center',
-  alignItems: 'center',
-  height: '100vh',
-  background: 'var(--color-bg-light)', // mismo fondo que Ayuda.jsx
-  fontFamily: 'Arial, sans-serif',
-  color: 'var(--color-text-light)',
-};
-
-const cardStyle = {
-  background: '#B4E2ED', // fondo azul claro
-  padding: '2rem',
-  borderRadius: '12px',
-  boxShadow: '0 8px 20px rgba(0,0,0,0.2)',
-  color: 'grey',
-  width: '100%',
-  maxWidth: '400px',
-  border: '1px solid #646cff', // borde morado
-};
-
-const titleStyle = {
-  textAlign: 'center',
-  marginBottom: '1.5rem',
-  fontWeight: '600',
-  fontSize: '1.6rem',
-  letterSpacing: '0.5px',
-  color: '#194C57', // color azul oscuro como en Ayuda.jsx
-};
-
-const formStyle = {
-  display: 'flex',
-  flexDirection: 'column',
-  gap: '1rem',
-};
-
-const inputStyle = {
-  padding: '0.8rem 1rem',
-  borderRadius: '8px',
-  border: '1px solid #646cff',
-  background: 'white',
-  color: '#333',
-  fontSize: '1rem',
-};
-
-const errorStyle = {
-  color: '#f87171', // rojo para error
-  fontSize: '0.85rem',
-  textAlign: 'center',
-};
-
-const buttonStyle = {
-  padding: '0.8rem 1rem',
-  borderRadius: '8px',
-  border: 'none',
-  background: '#194C57', // azul oscuro como en Ayuda.jsx
-  color: 'white',
-  fontSize: '1rem',
-  fontWeight: '600',
-  cursor: 'pointer',
-  transition: 'background 0.3s, transform 0.2s',
-};
-
-const registerTextStyle = {
-  textAlign: 'center',
-  marginTop: '0.8rem',
-  fontSize: '0.95rem',
-  color: '#194C57',
-};
-
-const registerLinkStyle = {
-  color: '#646cff',
-  textDecoration: 'none',
-  fontWeight: '600',
-};
 
 export default Login;

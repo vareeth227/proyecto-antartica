@@ -1,100 +1,129 @@
-/* ===========================================
-   Contenedor principal del input y el ícono
-   =========================================== */
-   .group {
-    display: flex;
-    line-height: 28px;
-    align-items: center;
-    position: relative;
-    max-width: 800px; /* Limita el ancho máximo del grupo a 800px. */
+.main-header {
+  padding: 1rem;
+  background-color: #194c57;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.header-row {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  width: 100%;
+}
+
+.header-logo img {
+  height: 50px;
+  display: block;
+}
+
+.header-categories {
+  display: flex;
+  align-items: center;
+}
+
+.header-search {
+  flex: 1;
+}
+
+.header-cart {
+  position: relative;
+  font-size: 20px;
+  color: white;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem;
+}
+
+.header-cart-count {
+  position: absolute;
+  top: -8px;
+  right: -10px;
+  background: red;
+  border-radius: 50%;
+  padding: 2px 6px;
+  font-size: 12px;
+  font-weight: bold;
+  color: white;
+}
+
+.header-menu-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.header-menu-button {
+  font-size: 24px;
+  cursor: pointer;
+  color: white;
+  background: transparent;
+  border: none;
+  padding: 0.4rem 0.6rem;
+  border-radius: 8px;
+  transition: background 0.2s;
+}
+
+.header-menu-button:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.header-dropdown {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background: #fff;
+  color: #213547;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.07);
+  border: 1px solid #194c57;
+  min-width: 180px;
+  max-height: 350px;
+  overflow-y: auto;
+  z-index: 99999;
+  margin: 0;
+  padding: 0.5rem 0;
+  display: flex;
+  flex-direction: column;
+  border-radius: 10px;
+}
+
+.header-link {
+  color: #213547;
+  padding: 0.5rem 1rem;
+  text-align: left;
+  text-decoration: none;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.header-link:hover {
+  background: #e8f2f6;
+}
+
+.header-logout {
+  background: none;
+  border: none;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+}
+
+.header-role-icon {
+  font-size: 16px;
+}
+
+@media (max-width: 900px) {
+  .header-row {
+    gap: 1rem;
+  }
+  .header-logo img {
+    height: 42px;
+  }
+  .content-inline.header-search {
     width: 100%;
-}
-
-/* ===========================================
-   Estilo del campo de entrada
-   =========================================== */
-
-body.dark-mode .input {
-    font-family: "Montserrat", sans-serif;
-    width: 100%;
-    height: 45px;
-    padding-left: 2.5rem;
-    box-shadow: none;
-    border: none;
-    border-radius: 0;
-    background-color: #16171d;
-    outline: none;
-    color: #bdbecb;
-    transition: all 0.25s cubic-bezier(0.19, 1, 0.22, 1);
-    cursor: text;
-    z-index: 0;
-}
-
-body.light-mode .input {
-    font-family: "Montserrat", sans-serif;
-    width: 100%;
-    height: 45px;
-    padding-left: 2.5rem;
-    box-shadow: none;
-    border: none;
-    border-radius: 0;
-    background-color: #f4f4f5;
-    outline: none;
-    color: #333;
-    transition: all 0.25s cubic-bezier(0.19, 1, 0.22, 1);
-    cursor: text;
-    z-index: 0;
-}
-
-/* ===========================================
-   Estilo del placeholder
-   =========================================== */
-body.dark-mode .input::placeholder {
-    color: #bdbecb;
-}
-body.light-mode .input::placeholder {
-    color: #888;
-}
-
-/* ===========================================
-   Estilo al pasar el mouse sobre el input
-   =========================================== */
-.input:hover {
-    box-shadow: 0 0 0 2.5px #2f303d, 0px 0px 25px -15px #000; /* Resalta con una sombra más fuerte al hover. */
-}
-
-/* ===========================================
-   Estilo al hacer click en el input
-   =========================================== */
-.input:active {
-    transform: scale(0.95);   /* Reduce ligeramente el tamaño para efecto de "clic". */
-}
-
-/* ===========================================
-   Estilo al enfocar el input (focus)
-   =========================================== */
-.input:focus {
-    box-shadow: 0 0 0 2.5px #2f303d;  /* Resalta el input al estar activo con un borde luminoso. */
-}
-
-/* ===========================================
-   Ícono de búsqueda dentro del input
-   =========================================== */
-body.dark-mode .search-icon {
-    position: absolute;
-    left: 1rem;
-    fill: #bdbecb;
-    width: 1rem;
-    height: 1rem;
-    pointer-events: none;
-    z-index: 1;
-}
-body.light-mode .search-icon {
-    position: absolute;
-    left: 1rem;
-    fill: #888;
-    width: 1rem;
-    height: 1rem;
-    pointer-events: none;
-    z-index: 1;
+  }
 }

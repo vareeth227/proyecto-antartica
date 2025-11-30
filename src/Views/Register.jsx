@@ -1,20 +1,22 @@
-// src/pages/Register.jsx
-import React, { useState } from "react";
+// src/Views/Register.jsx
+import React, { useState } from 'react';
+import './Auth.css';
 
-// Registro con validacion mas permisiva (telefono +569xxxxxxxx o 9xxxxxxxx, RUT con/ sin guion)
+/**
+ * Formulario de registro con validación de email, contraseña, teléfono y RUT chileno.
+ */
 function Register() {
   const [formData, setFormData] = useState({
-    nombre: "",
-    apellido: "",
-    email: "",
-    password: "",
-    confirmPassword: "",
-    telefono: "",
-    region: "",
-    comuna: "",
-    rut: "",
+    nombre: '',
+    apellido: '',
+    email: '',
+    password: '',
+    confirmPassword: '',
+    telefono: '',
+    region: '',
+    comuna: '',
+    rut: '',
   });
-
   const [errors, setErrors] = useState({});
 
   const handleChange = (e) => {
@@ -24,31 +26,21 @@ function Register() {
   const validate = () => {
     const newErrors = {};
 
-    const emailVal = (formData.email || "").trim();
-    const telefonoVal = (formData.telefono || "").trim();
-    const rutVal = (formData.rut || "").trim();
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(formData.email)) newErrors.email = 'Correo inválido';
 
-    // Email basico
-    const emailRegex = /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/;
-    if (!emailRegex.test(emailVal)) {
-      newErrors.email = "Correo invalido";
-    }
-
-    // Password
     if (formData.password !== formData.confirmPassword) {
-      newErrors.password = "Las contrasenas no coinciden";
+      newErrors.password = 'Las contraseñas no coinciden';
     }
 
-    // Telefono chileno: +569xxxxxxxx, 569xxxxxxxx o 9xxxxxxxx
-    const phoneDigits = telefonoVal.replace(/[^\\d]/g, "");
-    const phoneRegex = /^(?:\\+?56)?9\\d{8}$/;
-    if (!phoneRegex.test(telefonoVal) && !phoneRegex.test("+" + phoneDigits)) {
-      newErrors.telefono = "Telefono invalido. Usa +569 y 8 digitos (ej: +56912345678)";
+    const phoneRegex = /^\+569\d{8}$/;
+    if (!phoneRegex.test(formData.telefono)) {
+      newErrors.telefono = 'Teléfono inválido. Debe iniciar con +569 y tener 9 dígitos';
     }
 
-    // RUT chileno
+    // Validar RUT chileno
     const validateRut = (rut) => {
-      const cleanRut = rut.replace(/[^\\dkK]/g, "").toUpperCase();
+      const cleanRut = rut.replace(/[^\dkK]/g, '').toUpperCase();
       if (cleanRut.length < 8 || cleanRut.length > 9) return false;
       const body = cleanRut.slice(0, -1);
       const verifier = cleanRut.slice(-1);
@@ -59,169 +51,90 @@ function Register() {
         multiplier = multiplier === 7 ? 2 : multiplier + 1;
       }
       const mod = 11 - (sum % 11);
-      const expectedVerifier = mod === 11 ? "0" : mod === 10 ? "K" : mod.toString();
+      const expectedVerifier = mod === 11 ? '0' : mod === 10 ? 'K' : mod.toString();
       return verifier === expectedVerifier;
     };
-
-    if (!validateRut(rutVal)) {
-      newErrors.rut = "RUT invalido";
-    }
+    if (!validateRut(formData.rut)) newErrors.rut = 'RUT inválido';
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validate()) return;
 
-    const API_BASE = import.meta.env.VITE_API_URL || "";
-    fetch(`${API_BASE}/auth/register`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        nombre: formData.nombre,
-        apellido: formData.apellido,
-        email: formData.email.trim(),
-        password: formData.password,
-        telefono: formData.telefono.trim(),
-        region: formData.region,
-        comuna: formData.comuna,
-        rut: formData.rut.trim(),
-      }),
-    })
-      .then(async (r) => {
-        if (!r.ok) {
-          const err = await r.json().catch(() => ({}));
-          throw new Error(err.error || "Registro fallido");
-        }
-        return r.json();
-      })
-      .then((data) => {
-        // si el backend devuelve error, capturarlo
-        if (data?.error) {
-          throw new Error(data.error);
-        }
-        alert("Registro exitoso. Ya puedes iniciar sesion.");
-        setFormData({
-          nombre: "",
-          apellido: "",
-          email: "",
-          password: "",
-          confirmPassword: "",
-          telefono: "",
-          region: "",
-          comuna: "",
-          rut: "",
+    const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:4000';
+    const endpoints = [`${API_BASE}/auth/register`, `${API_BASE}/api/register`];
+
+    const payload = {
+      nombre: formData.nombre,
+      apellido: formData.apellido,
+      email: formData.email,
+      password: formData.password,
+      telefono: formData.telefono,
+      region: formData.region,
+      comuna: formData.comuna,
+      rut: formData.rut,
+    };
+
+    let lastError = 'Registro fallido';
+    for (const url of endpoints) {
+      try {
+        const r = await fetch(url, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
         });
-        window.location.href = "/login";
-      })
-      .catch((err) => {
-        alert(err.message || "Registro fallido");
-      });
+        if (!r.ok) {
+          const err = await r.json().catch(async () => {
+            const txt = await r.text().catch(() => '');
+            return { error: txt };
+          });
+          throw new Error(err.error || `Error ${r.status} en ${url}`);
+        }
+        await r.json().catch(() => ({}));
+        alert('Registro exitoso. Ya puedes iniciar sesión.');
+        setFormData({ nombre: '', apellido: '', email: '', password: '', confirmPassword: '', telefono: '', region: '', comuna: '', rut: '' });
+        window.location.href = '/login';
+        return;
+      } catch (err) {
+        lastError = err.message;
+      }
+    }
+    alert(lastError);
   };
 
   return (
-    <div style={containerStyle}>
-      <div style={cardStyle}>
-        <h2 style={titleStyle}>Registro de Usuario</h2>
-        <form onSubmit={handleSubmit} style={formStyle}>
-          {["nombre", "apellido", "email", "password", "confirmPassword", "telefono", "region", "comuna", "rut"].map(
-            (field) => (
-              <div key={field} style={inputContainerStyle}>
-                <input
-                  type={field === "password" || field === "confirmPassword" ? "password" : "text"}
-                  name={field}
-                  placeholder={
-                    field === "password"
-                      ? "Contrasena"
-                      : field === "confirmPassword"
-                      ? "Confirmar Contrasena"
+    <div className="auth-container">
+      <div className="auth-card">
+        <h2 className="auth-title">Registro de Usuario</h2>
+        <form onSubmit={handleSubmit} className="auth-form">
+          {['nombre', 'apellido', 'email', 'password', 'confirmPassword', 'telefono', 'region', 'comuna', 'rut'].map((field) => (
+            <div key={field} className="auth-input-group">
+              <input
+                type={field === 'password' || field === 'confirmPassword' ? 'password' : 'text'}
+                name={field}
+                placeholder={
+                  field === 'password'
+                    ? 'Contraseña'
+                    : field === 'confirmPassword'
+                      ? 'Confirmar Contraseña'
                       : field.charAt(0).toUpperCase() + field.slice(1)
-                  }
-                  value={formData[field]}
-                  onChange={handleChange}
-                  style={inputStyle}
-                  required
-                />
-                {errors[field] && <span style={errorStyle}>{errors[field]}</span>}
-              </div>
-            )
-          )}
-          <button type="submit" style={buttonStyle}>
-            Registrar
-          </button>
+                }
+                value={formData[field]}
+                onChange={handleChange}
+                className="auth-input"
+                required
+              />
+              {errors[field] && <span className="auth-error">{errors[field]}</span>}
+            </div>
+          ))}
+          <button type="submit" className="auth-button">Registrar</button>
         </form>
       </div>
     </div>
   );
 }
-
-const containerStyle = {
-  display: "flex",
-  justifyContent: "center",
-  alignItems: "center",
-  minHeight: "100vh",
-  background: "var(--color-bg-light)",
-  fontFamily: "Arial, sans-serif",
-  color: "var(--color-text-light)",
-};
-
-const cardStyle = {
-  background: "#B4E2ED",
-  padding: "2rem",
-  borderRadius: "12px",
-  boxShadow: "0 8px 20px rgba(0,0,0,0.2)",
-  width: "100%",
-  maxWidth: "450px",
-  border: "1px solid #646cff",
-  color: "grey",
-};
-
-const titleStyle = {
-  textAlign: "center",
-  marginBottom: "1.5rem",
-  fontWeight: "600",
-  fontSize: "1.8rem",
-  color: "#194C57",
-};
-
-const formStyle = {
-  display: "flex",
-  flexDirection: "column",
-  gap: "1rem",
-};
-
-const inputContainerStyle = {
-  display: "flex",
-  flexDirection: "column",
-};
-
-const inputStyle = {
-  padding: "0.8rem 1rem",
-  borderRadius: "8px",
-  border: "1px solid #646cff",
-  background: "#fff",
-  color: "grey",
-  outline: "none",
-};
-
-const errorStyle = {
-  color: "#f87171",
-  fontSize: "0.85rem",
-  marginTop: "0.25rem",
-};
-
-const buttonStyle = {
-  padding: "0.8rem 1rem",
-  borderRadius: "8px",
-  border: "none",
-  background: "#194C57",
-  color: "white",
-  fontSize: "1rem",
-  fontWeight: "600",
-  cursor: "pointer",
-  transition: "background 0.3s, transform 0.2s",
-};
 
 export default Register;

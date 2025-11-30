@@ -32,8 +32,9 @@ function Home() {
   // Estado de comentarios agregados por los usuarios
   const [comments, setComments] = useState([]);
 
-  // Cargar libros desde la API al montar
+  // Cargar libros desde la API al montar (probar sin /api primero)
   useEffect(() => {
+<<<<<<< HEAD
     const API_BASE = import.meta.env.VITE_API_URL || '';
     fetch(`${API_BASE}/books`)
       .then((r) => r.json())
@@ -43,6 +44,26 @@ function Home() {
         else setBooks(data.items || []);
       })
       .catch(() => setBooks(initialBooks));
+=======
+    const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:4000';
+    const endpoints = [`${API_BASE}/books`, `${API_BASE}/api/books`];
+    const tryFetch = async () => {
+      for (const url of endpoints) {
+        try {
+          const r = await fetch(url);
+          if (!r.ok) continue;
+          const data = await r.json();
+          if (Array.isArray(data)) { setBooks(data); return; }
+          setBooks(data.items || []);
+          return;
+        } catch {
+          /* intentar siguiente endpoint */
+        }
+      }
+      setBooks(initialBooks);
+    };
+    tryFetch();
+>>>>>>> 5f444a4 (testeo back y front 1)
   }, []);
 
   // Función para agregar un libro al carrito (reduce stock)
@@ -52,6 +73,7 @@ function Home() {
       window.location.href = '/login';
       return;
     }
+<<<<<<< HEAD
     const API_BASE = import.meta.env.VITE_API_URL || '';
     fetch(`${API_BASE}/cart`, {
       method: 'POST',
@@ -61,14 +83,35 @@ function Home() {
       if (!r.ok) {
         const err = await r.json().catch(() => ({}));
         throw new Error(err.error || 'Error añadiendo al carrito');
+=======
+    const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:4000';
+    const endpoints = [`${API_BASE}/cart`, `${API_BASE}/api/cart`];
+    const payload = JSON.stringify({ book_id: book.id, quantity: 1 });
+    const headers = { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` };
+
+    (async () => {
+      let lastError = 'Error añadiendo al carrito';
+      for (const url of endpoints) {
+        try {
+          const r = await fetch(url, { method: 'POST', headers, body: payload });
+          if (!r.ok) {
+            const err = await r.json().catch(async () => {
+              const txt = await r.text().catch(() => '');
+              return { error: txt };
+            });
+            throw new Error(err.error || `Error ${r.status} en ${url}`);
+          }
+          setBooks((prev) => prev.map((b) => b.id === book.id ? { ...b, stock: b.stock - 1 } : b));
+          setCart((c) => [...c, book]);
+          try { window.dispatchEvent(new Event('cartChanged')); } catch { /* ignore */ }
+          return;
+        } catch (err) {
+          lastError = err.message;
+        }
+>>>>>>> 5f444a4 (testeo back y front 1)
       }
-      // actualizar stock localmente
-      setBooks((prev) => prev.map((b) => b.id === book.id ? { ...b, stock: b.stock - 1 } : b));
-      // opcional: actualizar cart local para mostrar el panel
-      setCart((c) => [...c, book]);
-      // notificar a header y otros listeners que el carrito cambió
-  try { window.dispatchEvent(new Event('cartChanged')); } catch { /* ignore dispatch errors */ }
-    }).catch((err) => alert(err.message));
+      alert(lastError);
+    })();
   };
   // Función para eliminar un libro del carrito por índice (y devolver stock)
   const _removeFromCart = (index) => {

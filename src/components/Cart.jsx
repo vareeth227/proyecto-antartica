@@ -12,10 +12,10 @@ function Cart({ removeFromCart: _propRemove }) {
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (!token) return; // no autenticado
-    fetch(`${API_BASE}/cart`, { headers: { Authorization: `Bearer ${token}` } })
-      .then(async (r) => {
-        if (!r.ok) throw new Error('No se pudo cargar el carrito');
-        const data = await r.json();
+  fetch(`${API_BASE}/cart`, { headers: { Authorization: `Bearer ${token}` } })
+    .then(async (r) => {
+      if (!r.ok) throw new Error('No se pudo cargar el carrito');
+      const data = await r.json();
         setCartItems(data);
       })
       .catch(() => setCartItems([]));
