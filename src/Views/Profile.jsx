@@ -21,7 +21,7 @@ function Profile() {
         return;
       }
       try {
-        const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:4000';
+        const API_BASE = import.meta.env.VITE_API_URL || '';
         const res = await fetch(`${API_BASE}/users/me`, { headers: { Authorization: `Bearer ${token}` } });
         if (!res.ok) {
           const fallbackUsers = JSON.parse(localStorage.getItem('users') || '[]');

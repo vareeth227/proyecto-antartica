@@ -1,7 +1,7 @@
 // Importación de React y hooks necesarios
 import React, { useState, useEffect } from 'react';
 
-const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:4000';
+const API_BASE = import.meta.env.VITE_API_URL || '';
 
 // Componente funcional Cart que recibe props: cartItems y removeFromCart
 function Cart({ removeFromCart: _propRemove }) {

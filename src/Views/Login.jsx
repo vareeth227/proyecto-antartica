@@ -45,7 +45,7 @@ function Login() {
     }
 
     // Determinar base de la API (soporta VITE_API_URL o fallback a localhost:4000)
-    const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:4000';
+    const API_BASE = import.meta.env.VITE_API_URL || '';
     // Autenticar contra la API
     fetch(`${API_BASE}/auth/login`, {
       method: 'POST',

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 
 export default function AdminUsers() {
-  const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:4000';
+  const API_BASE = import.meta.env.VITE_API_URL || '';
   const token = localStorage.getItem('token');
   const [users, setUsers] = useState([]);
   const [page, setPage] = useState(1);
