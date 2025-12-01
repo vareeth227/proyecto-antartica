@@ -1,5 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import API from '../config/api';
 
 function Profile() {
   const navigate = useNavigate();
@@ -21,8 +22,7 @@ function Profile() {
         return;
       }
       try {
-        const API_BASE = import.meta.env.VITE_API_URL || '';
-        const res = await fetch(`${API_BASE}/users/me`, { headers: { Authorization: `Bearer ${token}` } });
+        const res = await fetch(`${API.users}/me`, { headers: { Authorization: `Bearer ${token}` } });
         if (!res.ok) {
           const fallbackUsers = JSON.parse(localStorage.getItem('users') || '[]');
           setFull(fallbackUsers.find((u) => u.email === current.email) || current);
@@ -70,7 +70,16 @@ function Profile() {
         {full.role === 'admin' && (
           <button onClick={() => navigate('/adminview')} style={btnStyle}>Ir al Panel Admin</button>
         )}
-        <button onClick={() => { localStorage.removeItem('currentUser'); navigate('/'); }} style={btnStyleSecondary}>Logout</button>
+        <button
+          onClick={() => {
+            localStorage.removeItem('currentUser');
+            localStorage.removeItem('token');
+            navigate('/');
+          }}
+          style={btnStyleSecondary}
+        >
+          Logout
+        </button>
       </div>
     </div>
   );

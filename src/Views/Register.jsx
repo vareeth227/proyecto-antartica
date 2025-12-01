@@ -1,5 +1,6 @@
 // src/Views/Register.jsx
 import React, { useState } from 'react';
+import API from '../config/api';
 import './Auth.css';
 
 /**
@@ -64,9 +65,6 @@ function Register() {
     e.preventDefault();
     if (!validate()) return;
 
-    const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:4000';
-    const endpoints = [`${API_BASE}/auth/register`, `${API_BASE}/api/register`];
-
     const payload = {
       nombre: formData.nombre,
       apellido: formData.apellido,
@@ -79,28 +77,26 @@ function Register() {
     };
 
     let lastError = 'Registro fallido';
-    for (const url of endpoints) {
-      try {
-        const r = await fetch(url, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
+    try {
+      const r = await fetch(API.register, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      if (!r.ok) {
+        const err = await r.json().catch(async () => {
+          const txt = await r.text().catch(() => '');
+          return { error: txt };
         });
-        if (!r.ok) {
-          const err = await r.json().catch(async () => {
-            const txt = await r.text().catch(() => '');
-            return { error: txt };
-          });
-          throw new Error(err.error || `Error ${r.status} en ${url}`);
-        }
-        await r.json().catch(() => ({}));
-        alert('Registro exitoso. Ya puedes iniciar sesión.');
-        setFormData({ nombre: '', apellido: '', email: '', password: '', confirmPassword: '', telefono: '', region: '', comuna: '', rut: '' });
-        window.location.href = '/login';
-        return;
-      } catch (err) {
-        lastError = err.message;
+        throw new Error(err.error || `Error ${r.status} en ${API.register}`);
       }
+      await r.json().catch(() => ({}));
+      alert('Registro exitoso. Ya puedes iniciar sesión.');
+      setFormData({ nombre: '', apellido: '', email: '', password: '', confirmPassword: '', telefono: '', region: '', comuna: '', rut: '' });
+      window.location.href = '/login';
+      return;
+    } catch (err) {
+      lastError = err.message;
     }
     alert(lastError);
   };

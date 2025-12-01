@@ -1,6 +1,7 @@
 // src/Views/Login.jsx
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import API from '../config/api';
 import './Auth.css';
 
 function Login() {
@@ -25,38 +26,33 @@ function Login() {
       return;
     }
 
-    const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:4000';
-    const endpoints = [`${API_BASE}/auth/login`, `${API_BASE}/api/login`];
-
     (async () => {
       let lastErr = 'Login failed';
-      for (const url of endpoints) {
-        try {
-          const r = await fetch(url, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email: formData.email, password: formData.password })
+      try {
+        const r = await fetch(API.login, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: formData.email, password: formData.password })
+        });
+        if (!r.ok) {
+          const err = await r.json().catch(async () => {
+            const txt = await r.text().catch(() => '');
+            return { error: txt };
           });
-          if (!r.ok) {
-            const err = await r.json().catch(async () => {
-              const txt = await r.text().catch(() => '');
-              return { error: txt };
-            });
-            throw new Error(err.error || `Error ${r.status} en ${url}`);
-          }
-          const data = await r.json();
-          localStorage.setItem('token', data.token);
-          localStorage.setItem('currentUser', JSON.stringify(data.user));
-          setError('');
-          if (data.user.role === 'admin') {
-            window.location.href = '/adminview';
-          } else {
-            window.location.href = '/';
-          }
-          return;
-        } catch (e) {
-          lastErr = e.message;
+          throw new Error(err.error || `Error ${r.status} en ${API.login}`);
         }
+        const data = await r.json();
+        localStorage.setItem('token', data.token);
+        localStorage.setItem('currentUser', JSON.stringify(data.user));
+        setError('');
+        if (data.user.role === 'admin') {
+          window.location.href = '/adminview';
+        } else {
+          window.location.href = '/';
+        }
+        return;
+      } catch (e) {
+        lastErr = e.message;
       }
       setError(lastErr);
     })();

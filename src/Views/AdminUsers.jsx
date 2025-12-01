@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
+import API from '../config/api';
 
 export default function AdminUsers() {
-  const API_BASE = import.meta.env.VITE_API_URL || '';
   const token = localStorage.getItem('token');
   const [users, setUsers] = useState([]);
   const [page, setPage] = useState(1);
@@ -10,7 +10,7 @@ export default function AdminUsers() {
 
   const load = async (p = page, l = limit) => {
     try {
-      const res = await fetch(`${API_BASE}/users?page=${p}&limit=${l}`, { headers: { Authorization: `Bearer ${token}` } });
+      const res = await fetch(`${API.users}?page=${p}&limit=${l}`, { headers: { Authorization: `Bearer ${token}` } });
       if (!res.ok) throw new Error('Error cargando usuarios');
       const data = await res.json();
       // aceptar dos formatos: array (legacy) o { items, total, page, limit }
@@ -47,7 +47,7 @@ export default function AdminUsers() {
     if (role === 'admin') return alert('No se puede eliminar un usuario con rol admin.');
     if (!window.confirm('¿Eliminar este usuario?')) return;
     try {
-      const res = await fetch(`${API_BASE}/users/${id}`, { method: 'DELETE', headers: { Authorization: `Bearer ${token}` } });
+      const res = await fetch(`${API.users}/${id}`, { method: 'DELETE', headers: { Authorization: `Bearer ${token}` } });
       if (!res.ok) {
         const err = await res.json().catch(() => ({}));
         throw new Error(err.error || 'Error eliminando usuario');

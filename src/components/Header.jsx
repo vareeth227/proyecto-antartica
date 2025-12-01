@@ -1,6 +1,7 @@
 // src/components/Header.jsx
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import API from '../config/api';
 import SidebarCategorias from './SidebarCategorias';
 import './SearchInline.css';
 import './Header.css';
@@ -12,13 +13,12 @@ function Header() {
   const [_darkMode, _setDarkMode] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
   const navigate = useNavigate();
-  const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:4000';
 
   const updateCartCount = async () => {
     const t = localStorage.getItem('token');
     if (t) {
       try {
-        const res = await fetch(`${API_BASE}/cart`, { headers: { Authorization: `Bearer ${t}` } });
+        const res = await fetch(API.cart, { headers: { Authorization: `Bearer ${t}` } });
         if (!res.ok) throw new Error('No auth');
         const data = await res.json();
         const sum = Array.isArray(data) ? data.reduce((s, it) => s + (it.quantity || 1), 0) : 0;
@@ -45,7 +45,7 @@ function Header() {
     const handler = () => {
       const token = localStorage.getItem('token');
       if (token) {
-        fetch(`${API_BASE}/cart`, { headers: { Authorization: `Bearer ${token}` } })
+        fetch(API.cart, { headers: { Authorization: `Bearer ${token}` } })
           .then(async (r) => {
             if (!r.ok) throw new Error('No auth');
             const data = await r.json();
@@ -139,7 +139,9 @@ function Header() {
                     className="header-link header-logout"
                     onClick={() => {
                       localStorage.removeItem('currentUser');
+                      localStorage.removeItem('token');
                       setCurrentUser(null);
+                      setCartItems(0);
                       navigate('/');
                     }}
                   >

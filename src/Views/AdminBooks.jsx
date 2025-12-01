@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
+import API from '../config/api';
 import './AdminBooks.css';
 
 export default function AdminBooks() {
-  const API_BASE = import.meta.env.VITE_API_URL || '';
   const token = localStorage.getItem('token');
   const [books, setBooks] = useState([]);
   const [page, setPage] = useState(1);
@@ -27,7 +27,7 @@ export default function AdminBooks() {
 
   const load = async (p = page, l = limit) => {
     try {
-      const res = await fetch(`${API_BASE}/books?page=${p}&limit=${l}`);
+      const res = await fetch(`${API.books}?page=${p}&limit=${l}`);
       if (!res.ok) throw new Error('Error cargando libros');
       const data = await res.json();
       setBooks(data.items || data);
@@ -73,7 +73,7 @@ export default function AdminBooks() {
     }
     try {
       const descriptionWithMeta = `${form.description || ''} | Género: ${form.genre || 'N/A'} | Formato: ${form.format || 'N/A'} | Publicación: ${form.releaseDate || 'N/A'} | Destacado: ${form.featured ? 'Sí' : 'No'} | Páginas: ${form.pageCount || 'N/A'}`;
-      const res = await fetch(`${API_BASE}/books`, {
+      const res = await fetch(API.books, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
         body: JSON.stringify({
@@ -111,7 +111,7 @@ export default function AdminBooks() {
     if (!token) return window.location.href = '/login';
     if (!window.confirm('¿Eliminar este libro? Esta acción no se puede deshacer.')) return;
     try {
-      const res = await fetch(`${API_BASE}/books/${id}`, { method: 'DELETE', headers: { Authorization: `Bearer ${token}` } });
+      const res = await fetch(`${API.books}/${id}`, { method: 'DELETE', headers: { Authorization: `Bearer ${token}` } });
       if (!res.ok) {
         const err = await res.json().catch(() => ({}));
         throw new Error(err.error || 'Error eliminando libro');
@@ -131,7 +131,7 @@ export default function AdminBooks() {
   const saveEdit = async (id) => {
     if (!token) return window.location.href = '/login';
     try {
-      const res = await fetch(`${API_BASE}/books/${id}`, { method: 'PUT', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` }, body: JSON.stringify({ stock: Number(editingStock) }) });
+      const res = await fetch(`${API.books}/${id}`, { method: 'PUT', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` }, body: JSON.stringify({ stock: Number(editingStock) }) });
       if (!res.ok) {
         const err = await res.json().catch(() => ({}));
         throw new Error(err.error || 'Error actualizando libro');

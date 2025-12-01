@@ -1,5 +1,6 @@
 // Importación de dependencias y componentes
 import React, { useState, useEffect } from 'react';
+import API from '../config/api';
 import BookCard from '../components/BookCard';        // Componente que muestra un libro con flip card
 import CommentForm from '../components/CommentForm';  // Formulario para agregar comentarios
 import SidebarCategorias from '../components/SidebarCategorias'; // Menú lateral de categorías
@@ -23,22 +24,18 @@ function Home() {
   const [cart, setCart] = useState([]);
   const [comments, setComments] = useState([]);
 
-  // Cargar libros desde la API al montar (probar sin /api primero)
+  // Cargar libros desde la API al montar
   useEffect(() => {
-    const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:4000';
-    const endpoints = [`${API_BASE}/books`, `${API_BASE}/api/books`];
     const tryFetch = async () => {
-      for (const url of endpoints) {
-        try {
-          const r = await fetch(url);
-          if (!r.ok) continue;
-          const data = await r.json();
-          if (Array.isArray(data)) { setBooks(data); return; }
-          setBooks(data.items || []);
-          return;
-        } catch {
-          /* intentar siguiente endpoint */
-        }
+      try {
+        const r = await fetch(API.books);
+        if (!r.ok) throw new Error();
+        const data = await r.json();
+        if (Array.isArray(data)) { setBooks(data); return; }
+        setBooks(data.items || []);
+        return;
+      } catch {
+        /* fallback a catálogo local si la API falla */
       }
       setBooks(initialBooks);
     };
@@ -52,30 +49,26 @@ function Home() {
       window.location.href = '/login';
       return;
     }
-    const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:4000';
-    const endpoints = [`${API_BASE}/cart`, `${API_BASE}/api/cart`];
     const payload = JSON.stringify({ book_id: book.id, quantity: 1 });
     const headers = { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` };
 
     (async () => {
       let lastError = 'Error añadiendo al carrito';
-      for (const url of endpoints) {
-        try {
-          const r = await fetch(url, { method: 'POST', headers, body: payload });
-          if (!r.ok) {
-            const err = await r.json().catch(async () => {
-              const txt = await r.text().catch(() => '');
-              return { error: txt };
-            });
-            throw new Error(err.error || `Error ${r.status} en ${url}`);
-          }
-          setBooks((prev) => prev.map((b) => b.id === book.id ? { ...b, stock: b.stock - 1 } : b));
-          setCart((c) => [...c, book]);
-          try { window.dispatchEvent(new Event('cartChanged')); } catch { /* ignore */ }
-          return;
-        } catch (err) {
-          lastError = err.message;
+      try {
+        const r = await fetch(API.cart, { method: 'POST', headers, body: payload });
+        if (!r.ok) {
+          const err = await r.json().catch(async () => {
+            const txt = await r.text().catch(() => '');
+            return { error: txt };
+          });
+          throw new Error(err.error || `Error ${r.status} en ${API.cart}`);
         }
+        setBooks((prev) => prev.map((b) => b.id === book.id ? { ...b, stock: b.stock - 1 } : b));
+        setCart((c) => [...c, book]);
+        try { window.dispatchEvent(new Event('cartChanged')); } catch { /* ignore */ }
+        return;
+      } catch (err) {
+        lastError = err.message;
       }
       alert(lastError);
     })();
